@@ -2,6 +2,12 @@
 # Created by https://www.gitignore.io/api/node,linux,macos,windows,webstorm,jetbrains,sublimetext
 # Edit at https://www.gitignore.io/?templates=node,linux,macos,windows,webstorm,jetbrains,sublimetext
 
+# ignore the test results
+reportsMount
+.nyc_output
+
+
+
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839

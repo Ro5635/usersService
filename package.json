@@ -6,13 +6,18 @@
   "dependencies": {
     "aws-serverless-express": "^3.3.5",
     "bunyan": "^1.8.12",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "dynamodb-doc": "^1.0.0",
     "express": "^4.16.4",
-    "morgan": "^1.9.1"
+    "mocha": "^6.0.1",
+    "mocha-junit-reporter": "^1.18.0",
+    "morgan": "^1.9.1",
+    "nyc": "^13.3.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc ./node_modules/.bin/mocha --recursive --timeout=10000 --exit --reporter mocha-junit-reporter --reporter-options mochaFile=reportsMount/reports/mocha/test-results.xml"
   },
   "author": "",
   "license": "ISC"
