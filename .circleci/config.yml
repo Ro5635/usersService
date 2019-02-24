@@ -1,0 +1,56 @@
+# CircleCI 2.0 configuration file
+#
+# At the base of this file is the template for building this off a circle CI Docker base
+# this is left for later attempts to switch from a bare VM that this uses.
+#
+version: 2
+jobs:
+  build:
+    machine: true # Use a Linux VM
+    working_directory: ~/repo # Default working directory, where project will be cloned
+
+    steps:
+    - checkout
+
+    - run:
+        name: "Setup custom environment variables"
+        command: |
+          echo 'export NODE_ENV="test"' >> $BASH_ENV
+
+    - run: docker-compose up -d
+    # Run the tests on the test runner container that is in he docker-compose environment and has network
+    # access to the required resources
+    - run: docker exec -it test_runner npm test
+
+    - store_test_results:
+        path: reports
+
+
+#    - save_cache:
+#        key: v1-myapp-{{ arch }}-{{ checksum "project.clj" }}
+#        paths:
+#        - node_modules
+
+
+
+
+#jobs:
+#  build:
+#    docker:
+#    # Primary container image where all steps run.
+#    - image: node:8-slim
+#    # Secondary container image on common network.
+#    - image: amazon/dynamodb-local
+#      entrypoint: java
+#      command: "-jar DynamoDBLocal.jar -sharedDb"
+#    # DynamoDB-configurator
+#
+#
+#
+#
+#    working_directory: ~/
+#
+#    steps:
+#    # command will execute in trusty container
+#    # and can access mongo on localhost
+#    - run: sleep 5 && nc -vz localhost 27017
