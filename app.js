@@ -3,6 +3,10 @@ const path = require('path');
 const morganLogger = require('morgan');
 const bodyParser = require('body-parser');
 
+const graphqlHTTP = require('express-graphql');
+const graphQLSchema = require('./graphQL/graphQLSchema');
+const graphQLRootResolver = require('./graphQL/graphQLRootResolver');
+
 const logger = require('./Helpers/LogHelper').getLogger(__filename);
 const responseMiddleware =  require('./Middleware/responseMiddleware');
 
@@ -29,6 +33,14 @@ app.use(function (req, res, next) {
 
 // Routers
 app.use('/', index);
+
+
+app.use('/graphql', graphqlHTTP({
+    schema: graphQLSchema,
+    rootValue: graphQLRootResolver,
+    graphiql: true,
+}));
+
 
 
 // catch 404 and forward to error handler

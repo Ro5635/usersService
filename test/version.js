@@ -31,11 +31,10 @@ describe('API Root', () => {
                 .get('/')
                 .end((err, res) => {
                     // Expected response
-                    const expectedResponse = {msg: 'Service API', version: apiVersion};
+                    const expectedResponse = {msg: 'Users Service API', version: apiVersion};
                     res.should.have.status(200);
                     res.body.should.be.a('Object');
                     res.body.should.have.property('version');
-                    res.body.should.have.property('msg').eql('Service API');
                     // Duplicate tests a bit to demo the syntax options for future reference
                     res.body.should.have.property('version').eql(expectedResponse.version);
                     res.body.should.have.property('msg').eql(expectedResponse.msg);

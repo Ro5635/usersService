@@ -12,7 +12,7 @@ const apiVersion = require('../package').version;
 
 router.get('/', function (req, res, next) {
     logger.debug('Responding to caller with API name and version');
-    return res.sendResponse(200, {msg: 'Service API', version: apiVersion});
+    return res.sendResponse(200, {msg: 'Users Service API', version: apiVersion});
 
 });
 
