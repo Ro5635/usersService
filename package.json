@@ -4,6 +4,7 @@
   "description": "",
   "main": "./bin/devRunner.js",
   "dependencies": {
+    "aws-sdk": "^2.412.0",
     "aws-serverless-express": "^3.3.5",
     "body-parser": "latest",
     "bunyan": "^1.8.12",
