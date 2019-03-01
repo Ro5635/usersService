@@ -7,6 +7,7 @@ const schema = buildSchema(`
     id: String!
     name: String!
     dashboards: [String!]
+    subscriptions: [String!]
     
   }
   
@@ -15,10 +16,18 @@ const schema = buildSchema(`
     jwt:    String
     
   }
+  
+  type createUserResponse {
+    success: Boolean!
+    newUserID: String
+    errorDescription: String
+    
+  }
 
   type Query {
-    getUser(id: String!): User
+    getUser(id: String): User
     login(email: String!, password: String!): loginResponse
+    createUser(email: String!, password: String!, firstName: String!, lastName: String!): createUserResponse!
   }
   
   input userUpdateInput {
