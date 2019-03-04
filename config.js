@@ -24,13 +24,17 @@ const dev = {
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
     UsersEventsTable: "usersEventsTable",
     UsersTable: "usersTable",
-    JWTSigningKey: process.env.JWTSigningKey
 };
 
 const test = {};
 
 const prod = {
-
+    AuthServiceLoginURL: "https://auth-service.speedyiot.tech/login",
+    AuthServiceCreateUserURL: "https://auth-service.speedyiot.tech/user/create",
+    AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
+    UsersEventsTable: "usersEventsTable",
+    UsersTable: "usersTable",
+    JWTSigningKey: process.env.JWTSigningKey
 };
 
 const config = {

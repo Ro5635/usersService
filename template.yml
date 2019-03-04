@@ -26,7 +26,9 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: demoTable
-          NODE_ENV: dev
+          NODE_ENV: prod
+          AuthServiceJWT: YOURAUTHJWT
+          JWTSigningKey: JWTSIGNINGKEY
       # Use the existing IAM policy for access to required DynamoDB resources
       Policies: UsersTablesFullAccess
 
