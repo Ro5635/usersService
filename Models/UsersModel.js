@@ -21,8 +21,8 @@ const doc = require("dynamodb-doc");
 // Set up AWS DynamoDB
 aws.config.update(config.AWS_API_CONFIG);
 
-// let credentials = new aws.SharedIniFileCredentials({profile: 'robertuk'});  // TMP HACK to use local AWS CLI Profile
-// aws.config.credentials = credentials;
+let credentials = new aws.SharedIniFileCredentials({profile: 'robertuk'});  // TMP HACK to use local AWS CLI Profile
+aws.config.credentials = credentials;
 
 const docClient = new doc.DynamoDB();
 

@@ -9,6 +9,7 @@ const graphQLRootResolver = require('./graphQL/graphQLRootResolver');
 
 const logger = require('./Helpers/LogHelper').getLogger(__filename);
 const responseMiddleware =  require('./Middleware/responseMiddleware');
+const jwtCheck = require('./Middleware/jwtCheck');
 
 // Setup Routers
 const index = require('./Routers/index');
@@ -31,14 +32,23 @@ app.use(function (req, res, next) {
     next();
 });
 
+
 // Routers
 app.use('/', index);
 
 
+app.use('/login', graphqlHTTP({
+    schema: graphQLSchema.unauthenticatedSchema,
+    rootValue: graphQLRootResolver.unauthenticatedRoot
+}));
+
+
+// Require authentication for all remaining roots
+app.use(jwtCheck);                                        // MOVING HANDLERS ABOVE THIS LINE WILL MAKE THEM UNPROTECTED!
+
 app.use('/graphql', graphqlHTTP({
-    schema: graphQLSchema,
-    rootValue: graphQLRootResolver,
-    graphiql: true,
+    schema: graphQLSchema.authenticatedSchema,
+    rootValue: graphQLRootResolver.authenticatedRoot
 }));
 
 

@@ -1,19 +1,13 @@
 const {buildSchema} = require('graphql');
 
 // Construct a schema, using GraphQL schema language
-const schema = buildSchema(`
+exports.authenticatedSchema = buildSchema(`
 
   type User {
     id: String!
     name: String!
     dashboards: [String!]
     subscriptions: [String!]
-    
-  }
-  
-  type loginResponse {
-    success:    Boolean!
-    jwt:    String
     
   }
   
@@ -26,7 +20,6 @@ const schema = buildSchema(`
 
   type Query {
     getUser(id: String): User
-    login(email: String!, password: String!): loginResponse
     createUser(email: String!, password: String!, firstName: String!, lastName: String!): createUserResponse!
   }
   
@@ -40,5 +33,18 @@ const schema = buildSchema(`
 
 `);
 
+exports.unauthenticatedSchema = buildSchema(`
+ 
+  type loginResponse {
+    success:    Boolean!
+    jwt:    String
+    
+  }
+  
+  type Query {
+    login(email: String!, password: String!): loginResponse
+   }
 
-module.exports = schema;
+`);
+
+module.exports = exports;

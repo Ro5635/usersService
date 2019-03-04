@@ -1,3 +1,9 @@
+# Cloudformation / SAM Template for usersService
+#
+# Does not handle the creation of DB tables, however does provision the IAM permission for table access.
+#
+# @date 4/3/2019
+
 AWSTemplateFormatVersion: 2010-09-09
 Transform:
 - AWS::Serverless-2016-10-31
@@ -8,15 +14,6 @@ Parameters:
     Description: Borehole Tracker API
 
 Resources:
-  MyTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      PrimaryKey:
-         Name: id
-         Type: String
-      ProvisionedThroughput:
-         ReadCapacityUnits: 2
-         WriteCapacityUnits: 2
 
   BoreholeTrackerAPI:
     Type: AWS::Serverless::Function
@@ -28,14 +25,11 @@ Resources:
       Timeout: 3
       Environment:
         Variables:
-          TABLE_NAME: demoTable #!Ref MyTable
+          TABLE_NAME: demoTable
           NODE_ENV: dev
 
       Policies:
-
-      # Give just CRUD permissions
-      - DynamoDBCrudPolicy:
-          TableName: !Ref MyTable
+      # PUT POLICIES HERE!
 
       Events:
         GetEvent:

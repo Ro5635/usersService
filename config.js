@@ -12,7 +12,8 @@ const defaultConfig = {
     AuthServiceCreateUserURL: "https://auth-service.speedyiot.tech/user/create",
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
     UsersEventsTable: "authenticationServiceStack4-UsersEventDynamoDBTable-1XT0JL951LZLG",
-    UsersTable: "authenticationServiceStack4-UsersDynamoDBTable-9OMGEBXVUJ5O"
+    UsersTable: "authenticationServiceStack4-UsersDynamoDBTable-9OMGEBXVUJ5O",
+    JWTSigningKey: process.env.JWTSigningKey
 
 };
 

@@ -36,20 +36,12 @@ class createUserResponse {
 
 }
 
-
-// The root provides a resolver function for each API endpoint
-const root = {
-
-    getUser: async function ({id}, requestContext) {
-        logger.info('Request received to getUser handler');
-
-        // get the userID from JWT
-        // const suppliedJWT = requestContext.headers.jwt;
-
-        console.error('TAKING ID FROM USER DIRECTLY!');
-        return await UserModel.getUser(id);// This needs to take the ID from the JWT
-
-    },
+/**
+ * Unauthenticated root graphQL resolver
+ *
+ * The root provides a resolver function for each of the unauthenticated graphQL operations
+ */
+exports.unauthenticatedRoot = {
     login: async function ({email, password}) {
         logger.info('Request received to login handler');
         try {
@@ -64,6 +56,30 @@ const root = {
 
             return new loginResponse(false);
         }
+    }
+};
+
+
+/**
+ * Authenticated Root graphQL resolver
+ *
+ * The root provides a resolver function for each authenticated API operations
+ * where the user is required to have a validated JWT
+ */
+exports.authenticatedRoot = {
+
+    getUser: async function ({id}, requestContext) {
+        logger.info('Request received to getUser handler');
+        // The passed id here is not used, this is to allow for later expansion to have
+        // services with access permissions to access any user.
+
+        const validatedTokenPayload = requestContext.res.req.validatedAuthToken;
+
+        // get the userID from JWT
+        const trustedUserID = validatedTokenPayload.token.userID;
+
+        return await UserModel.getUser(trustedUserID);
+
     },
     createUser: async function ({email, password, firstName, lastName}) {
         logger.info('Request to create new user account received');
@@ -86,12 +102,10 @@ const root = {
         }
 
 
-
-
     }
 
 
 };
 
 
-module.exports = root;
+module.exports = exports;
