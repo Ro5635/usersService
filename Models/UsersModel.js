@@ -5,7 +5,7 @@
  *
  */
 
-const logger = require('../Helpers/LogHelper').getLogger(__filename);
+const logger = require('../Helpers/logHelper').getLogger(__filename);
 const config = require('../config');
 const uuidv1 = require('uuid/v1');
 const fetch = require('node-fetch');
@@ -111,13 +111,21 @@ exports.getUser = (userID) => {
         try {
             const userDBRequest = await docClient.getItem(params).promise();
 
-            logger.info('Successfully retrieved user from Database');
+            if (!userDBRequest.Item) {
+                logger.info('Passed userID could not be found in the database');
 
-            const userDetails = userDBRequest.Item;
+                logger.error('Returning failure to get user');
+                reject(new Error('Failed to get user'));
 
-            logger.info('Returning new user Object');
-            resolve(new User(userDetails.userID, userDetails.userFirstName, userDetails.userJWTPayload.dashboards, userDetails.userJWTPayload.subscriptions));
+            } else {
+                logger.info('Successfully retrieved user from Database');
 
+                const userDetails = userDBRequest.Item;
+
+                logger.info('Returning new user Object');
+                resolve(new User(userDetails.userID, userDetails.userFirstName, userDetails.userJWTPayload.dashboards, userDetails.userJWTPayload.subscriptions));
+
+            }
         } catch (err) {
             logger.error('Failed to get user details from DynamoDB');
             logger.error(err);

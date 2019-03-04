@@ -1,5 +1,5 @@
 let jwt = require('jsonwebtoken');
-const logger = require('../Helpers/LogHelper').getLogger(__filename);
+const logger = require('../Helpers/logHelper').getLogger(__filename);
 const config = require('../config.js');
 
 /**

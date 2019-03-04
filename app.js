@@ -7,7 +7,7 @@ const graphqlHTTP = require('express-graphql');
 const graphQLSchema = require('./graphQL/graphQLSchema');
 const graphQLRootResolver = require('./graphQL/graphQLRootResolver');
 
-const logger = require('./Helpers/LogHelper').getLogger(__filename);
+const logger = require('./Helpers/logHelper').getLogger(__filename);
 const responseMiddleware =  require('./Middleware/responseMiddleware');
 const jwtCheck = require('./Middleware/jwtCheck');
 

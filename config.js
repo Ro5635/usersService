@@ -29,11 +29,11 @@ const dev = {
 const test = {};
 
 const prod = {
-    AuthServiceLoginURL: "https://auth-service.speedyiot.tech/login",
-    AuthServiceCreateUserURL: "https://auth-service.speedyiot.tech/user/create",
+    AuthServiceLoginURL: process.env.AuthServiceLoginURL,
+    AuthServiceCreateUserURL: process.env.AuthServiceCreateUserURL,
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
-    UsersEventsTable: "usersEventsTable",
-    UsersTable: "usersTable",
+    UsersEventsTable: process.env.UsersEventsTable,
+    UsersTable: process.env.UsersTable,
     JWTSigningKey: process.env.JWTSigningKey
 };
 

@@ -3,7 +3,7 @@
  *
  */
 
-const logger = require('../Helpers/LogHelper').getLogger(__filename);
+const logger = require('../Helpers/logHelper').getLogger(__filename);
 const User = require('../Classes/User');
 const UserModel = require('../Models/UsersModel');
 
