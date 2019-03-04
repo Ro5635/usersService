@@ -1,4 +1,4 @@
-# Cloudformation / SAM Template for usersService
+# CloudFormation / SAM Template for usersService
 #
 # Does not handle the creation of DB tables, however does provision the IAM permission for table access.
 #
@@ -11,11 +11,11 @@ Transform:
 Parameters:
   ProjectId:
     Type: String
-    Description: Borehole Tracker API
+    Description: UsersService API
 
 Resources:
 
-  BoreholeTrackerAPI:
+  UsersServiceAPI:
     Type: AWS::Serverless::Function
     StageName: v0
     Properties:
@@ -27,9 +27,8 @@ Resources:
         Variables:
           TABLE_NAME: demoTable
           NODE_ENV: dev
-
-      Policies:
-      # PUT POLICIES HERE!
+      # Use the existing IAM policy for access to required DynamoDB resources
+      Policies: UsersTablesFullAccess
 
       Events:
         GetEvent:

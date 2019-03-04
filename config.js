@@ -7,7 +7,7 @@
 const env = process.env.NODE_ENV;
 
 const defaultConfig = {
-    AWS_API_CONFIG: {region: "eu-west-1", profile: 'robertuk'},
+    AWS_API_CONFIG: {},
     AuthServiceLoginURL: "https://auth-service.speedyiot.tech/login",
     AuthServiceCreateUserURL: "https://auth-service.speedyiot.tech/user/create",
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
@@ -17,11 +17,21 @@ const defaultConfig = {
 
 };
 
-const dev = {};
+const dev = {
+    AWS_API_CONFIG: {region: "local", endpoint: 'http://localhost:8000'},
+    AuthServiceLoginURL: "https://auth-service.speedyiot.tech/login",
+    AuthServiceCreateUserURL: "https://auth-service.speedyiot.tech/user/create",
+    AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
+    UsersEventsTable: "usersEventsTable",
+    UsersTable: "usersTable",
+    JWTSigningKey: process.env.JWTSigningKey
+};
 
 const test = {};
 
-const prod = {};
+const prod = {
+
+};
 
 const config = {
     dev,
