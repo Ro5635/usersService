@@ -1,6 +1,6 @@
-# serverlessAPIStarter
+# usersService
 
-An Empty API intended to be ran on the AWS serverless stack, set up for use with CircleCi and DynamoDB.
+API based on ro5635/serverlessAPIStarter, provides users resource functionality for speedyIOT, my final year project application.
 
 ## Running
 
