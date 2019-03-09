@@ -17,6 +17,17 @@ exports.authenticatedSchema = buildSchema(`
     errorDescription: String
     
   }
+  
+  type registerDashboardResponse {
+    success: Boolean!
+    newDashboardID: String
+    errorDescription: String
+    
+  }
+  
+  type Widget {
+    id: String
+  }
 
   type Query {
     getUser(id: String): User
@@ -27,8 +38,14 @@ exports.authenticatedSchema = buildSchema(`
     id: String!
   }
   
+  input newDashboardInput {
+    name: String!
+  
+  }
+  
   type Mutation {
     updateUser(updatedUser: userUpdateInput): String
+    registerNewDashboard(dashboard: newDashboardInput): registerDashboardResponse
   }
 
 `);

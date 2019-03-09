@@ -24,6 +24,7 @@ const dev = {
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
     UsersEventsTable: "usersEventsTable",
     UsersTable: "usersTable",
+    DashboardsTable: "dashboardsTable",
 };
 
 const test = {};
@@ -34,6 +35,7 @@ const prod = {
     AuthServiceCreateUserJWT: process.env.AuthServiceJWT,
     UsersEventsTable: process.env.UsersEventsTable,
     UsersTable: process.env.UsersTable,
+    DashboardsTable: process.env.DashboardTable,
     JWTSigningKey: process.env.JWTSigningKey
 };
 
