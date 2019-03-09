@@ -36,6 +36,24 @@ class createUserResponse {
 
 }
 
+
+/**
+ * registerDashboardResponse
+ *
+ * Models the response for a request to register a
+ * new dashboard to a user
+ */
+class registerDashboardResponse {
+    constructor(success, errorDescription, newDashboardID) {
+        this.success = success;
+        this.errorDescription = errorDescription;
+        this.newDashboardID = newDashboardID;
+
+    }
+
+}
+
+
 /**
  * Unauthenticated root graphQL resolver
  *
@@ -102,8 +120,32 @@ exports.authenticatedRoot = {
         }
 
 
-    }
+    },
+    registerNewDashboard: async function ({name}, requestContext) {
+        logger.info('Request to register new dashboard received');
 
+        const validatedTokenPayload = requestContext.res.req.validatedAuthToken;
+
+        // get the userID from JWT
+        const trustedUserID = validatedTokenPayload.token.userID;
+
+
+        try {
+
+            const newDashboardID = await UserModel.registerNewDashboardToUser(trustedUserID, name);
+
+            return new registerDashboardResponse(true, null, newDashboardID);
+
+
+        } catch (err) {
+            logger.error('Call to UserModel to register a new dashboard failed');
+            logger.error(err);
+            logger.error('Returning error to caller');
+            return new registerDashboardResponse(false, 'Failed to register new dashboard');
+
+        }
+
+    }
 
 };
 

@@ -13,6 +13,7 @@ const {URLSearchParams} = require('url');
 
 const UsersTable = config.UsersTable;
 const UsersEventsTable = config.UsersEventsTable;
+const DashboardsTable = config.DashboardsTable;
 
 // DynamoDB
 const aws = require("aws-sdk");
@@ -220,6 +221,107 @@ exports.registerNewUser = async function (email, password, firstName, lastName) 
     });
 };
 
+
+/**
+ * registerNewDashboardToUser
+ *
+ * Registers a new dashboard to a user, this is done here so that the users rights can be updated
+ *
+ * @param userID                user to register new dashboard to, this must be from a TRUSTED SOURCE
+ * @param dashboardName         Name for new dashboard
+ * @return {Promise<*>}         Success path resolves the new DashboardID  String
+ */
+exports.registerNewDashboardToUser = async function (userID, dashboardName) {
+    return new Promise(async function (resolve, reject) {
+
+        if (!userID || dashboardName) {
+            logger.error('Invalid parameters supplied to registerNewDashboardToUser');
+            return reject(new Error('Invalid parameters supplied to registerNewDashboardToUser'));
+        }
+
+        // TODO: Handle Collisions
+        const newDashboardID = uuidv1();
+
+        // Put new dashboard to tables
+        // config.DashboardTable;
+
+        let user;
+
+        try {
+            // Get the user's data from the DB
+            user = await exports.getUser(userID);
+
+        } catch (err) {
+            logger.error('Request to getUser failed');
+            logger.error(err);
+            logger.error('Cannot proceed to create new dashboard');
+            return reject(new Error('Failed to create dashboard'));
+
+        }
+
+        // Update the userTable with the new dashboard
+        let userDashboards = user.dashboards;
+        console.log(user);
+
+        userDashboards.push(newDashboardID);
+
+
+        try {
+
+            await docClient.updateItem({
+                TableName: UsersTable,
+                Key: {userID: userID},
+                UpdateExpression: 'SET #userdashboards.#dashboardsArray = list_append(if_not_exists(#userdashboards.#dashboardsArray, :empty_list), :newDashboardID)',
+                ExpressionAttributeNames: {
+                    '#userdashboards': 'userJWTPayload',
+                    '#dashboardsArray': 'dashboards'
+                },
+                ExpressionAttributeValues: {
+                    ':newDashboardID': [newDashboardID],
+                    ':empty_list': []
+                }
+            }).promise();
+
+        } catch (err) {
+            logger.error('Failed to update user on DB');
+            logger.error(err);
+            logger.error('Cannot proceed to create new dashboard');
+            return reject(new Error('Failed to create dashboard'));
+
+        }
+
+        logger.info('Successfully updated users dashboards');
+        // Now create the new dashboard on dashboardsTable
+
+        let requestParams = {};
+
+        requestParams.TableName = DashboardsTable;
+        requestParams.Item = {
+            'dashboardID': newDashboardID,
+            'createdAt': getCurrentUnixTime()
+        };
+
+        // Add expression to ensure that it cannot overwrite an item on the case of a eventID collision
+        requestParams.ConditionExpression = "attribute_not_exists(dashboardID)";
+
+        try {
+            logger.debug('Attempting to put new dashboard to DashboardsTable');
+            await docClient.putItem(requestParams).promise();
+            logger.debug('New dashboard successfully put to database');
+            logger.debug('New dashboard successfully created and attached to user');
+
+        } catch (err) {
+            logger.error('Failed to put create new dashboard on dashboard DB table');
+            logger.error(err);
+            return reject(new Error('Failed to create dashboard'));
+        }
+
+        // Return the new dashboardID
+        logger.info(`Completed creation of dashboardID: ${newDashboardID} for userID: ${userID}`);
+        return resolve(newDashboardID);
+
+    });
+};
 
 /**
  * putUserEvent
