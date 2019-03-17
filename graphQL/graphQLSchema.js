@@ -2,7 +2,6 @@ const {buildSchema} = require('graphql');
 
 // Construct a schema, using GraphQL schema language
 exports.authenticatedSchema = buildSchema(`
-
   type User {
     id: String!
     name: String!
@@ -25,13 +24,19 @@ exports.authenticatedSchema = buildSchema(`
     
   }
   
-  type Widget {
-    id: String
+  type getRefreshTokenResponse {
+    success: Boolean!
+    newJWT: String
+    errorDescription: String
+    
   }
+  
+
 
   type Query {
     getUser(id: String): User
     createUser(email: String!, password: String!, firstName: String!, lastName: String!): createUserResponse!
+    getRefreshToken(id: String): getRefreshTokenResponse!
   }
   
   input userUpdateInput {

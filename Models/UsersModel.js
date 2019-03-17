@@ -88,6 +88,59 @@ exports.login = async function (email, password) {
     });
 };
 
+
+/**
+ * refreshToken
+ *
+ * Gets a refreshed token from the current live users token
+ *
+ * @param callersJWT
+ * @return {Promise<any>}
+ */
+exports.refreshToken = (callersJWT) => {
+    return new Promise(async function (resolve, reject) {
+        logger.info('UsersModel is attempting to get a refresh token');
+
+        try {
+
+            logger.info('Calling auth-service with users JWT');
+            const authServiceResponse = await fetch(config.AuthServiceRefreshTokenURL, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "jwt": callersJWT
+                }
+            });
+
+            if (await authServiceResponse.ok) {
+                logger.info(`Received successful response from auth service for request for new refresh token `);
+                const authServiceResponseJSON = await authServiceResponse.json();
+
+                return resolve(authServiceResponseJSON.jwt);
+
+
+            }
+
+            logger.error('Error response received from auth API');
+            const statusCode = await authServiceResponse.status;
+
+            logger.error('Unidentified failure response from auth-service');
+            logger.error(`Response statusCode: ${statusCode}, with text: ${await authServiceResponse.statusText}`);
+            return reject(new Error('Failed to create new user account'));
+
+
+        } catch (err) {
+            logger.error('Failed to call the auth-api');
+            logger.error(err);
+
+            return reject(new Error('Failed to call auth-api'));
+
+        }
+
+
+    });
+};
+
 /**
  * getUser
  *

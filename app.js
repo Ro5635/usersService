@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const morganLogger = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors')
 
 const graphqlHTTP = require('express-graphql');
 const graphQLSchema = require('./graphQL/graphQLSchema');
@@ -21,6 +22,7 @@ const app = express();
 app.use(morganLogger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(cors());
 app.use(responseMiddleware.addSendResponseToRes);
 
 app.use(function (req, res, next) {
@@ -29,6 +31,8 @@ app.use(function (req, res, next) {
     res.setHeader('content-type', 'application/json');
     // TODO: Create list of allowed origins
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'content-type, auth, jwt');
     next();
 });
 

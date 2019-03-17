@@ -53,6 +53,22 @@ class registerDashboardResponse {
 
 }
 
+/**
+ * getRefreshTokenResponse
+ *
+ * Models the response to a request for a new token
+ *
+ */
+class getRefreshTokenResponse {
+    constructor(success, errorDescription, newJWT) {
+        this.success = success;
+        this.errorDescription = errorDescription;
+        this.newJWT = newJWT;
+
+    }
+
+}
+
 
 /**
  * Unauthenticated root graphQL resolver
@@ -118,7 +134,25 @@ exports.authenticatedRoot = {
             return new createUserResponse(false, err.message);
 
         }
+    },
+    getRefreshToken: async function (params, requestContext) {
+        logger.info('Request received for new updated JWT');
 
+        const validatedTokenPayload = requestContext.res.req.validatedAuthToken;
+        const rawToken = requestContext.res.req.headers.jwt;
+
+        try {
+            const refreshedToken = await UserModel.refreshToken(rawToken);
+
+            return new getRefreshTokenResponse(true, null, refreshedToken);
+
+        } catch (err) {
+            logger.error('Call to UserModel for a refresh token failed');
+            logger.error(err);
+            logger.error('Returning error to caller');
+            return new getRefreshTokenResponse(false, 'Failed to refresh token');
+
+        }
 
     },
     registerNewDashboard: async function ({name}, requestContext) {
