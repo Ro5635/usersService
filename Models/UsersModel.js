@@ -280,6 +280,8 @@ exports.registerNewUser = async function (email, password, firstName, lastName) 
  *
  * Registers a new dashboard to a user, this is done here so that the users rights can be updated
  *
+ * TODO: Looks like the call to get the users dashboards is not needed as it just appends, refactor this. Later...
+ *
  * @param userID                user to register new dashboard to, this must be from a TRUSTED SOURCE
  * @param dashboardName         Name for new dashboard
  * @return {Promise<*>}         Success path resolves the new DashboardID  String
@@ -375,6 +377,88 @@ exports.registerNewDashboardToUser = async function (userID, dashboardName) {
 
     });
 };
+
+
+/**
+ * removeDashboardFromUser
+ *
+ * Removes a dashboard from a user
+ *
+ * @param userID                user to register new dashboard to, this must be from a TRUSTED SOURCE
+ * @param dashboardID         DashboardID for removal
+ * @return {Promise<*>}         Success path resolves the new DashboardID  String
+ */
+exports.removeDashboardFromUser = async function (userID, dashboardID) {
+    return new Promise(async function (resolve, reject) {
+
+        if (!userID || !dashboardID) {
+            logger.error('Invalid parameters supplied to registerNewDashboardToUser');
+            return reject(new Error('Invalid parameters supplied to registerNewDashboardToUser'));
+        }
+
+        // Get the users current dashboards
+        let user;
+
+        try {
+            // Get the user's data from the DB
+            user = await exports.getUser(userID);
+            logger.info('Successfully acquired User');
+
+        } catch (err) {
+            logger.error('Request to getUser failed');
+            logger.error(err);
+            logger.error('Cannot proceed to remove a dashboard');
+            return reject(new Error('Failed to remove dashboard'));
+
+        }
+
+        // Update the userTable with the updated dashboards array
+        let userDashboards = user.dashboards;
+
+        // Remove the requested dashboard from the users current dashboard array
+        logger.info('Removing requested dashboard from the Users dashboards array');
+        userDashboards = userDashboards.filter( currentDashboardID => {
+            if (currentDashboardID === dashboardID) {
+                // Don't add back to array
+                logger.info(`Dropping dashboardID: ${currentDashboardID} from userDashboards`);
+
+            } else {
+                return currentDashboardID
+            }
+        });
+
+        // persist the updated userDashboards array to the user
+        try {
+
+            await docClient.updateItem({
+                TableName: UsersTable,
+                Key: {userID: userID},
+                UpdateExpression: 'SET #userdashboards.#dashboardsArray = :updatedDashboardsArray',
+                ExpressionAttributeNames: {
+                    '#userdashboards': 'userJWTPayload',
+                    '#dashboardsArray': 'dashboards'
+                },
+                ExpressionAttributeValues: {
+                    ':updatedDashboardsArray': userDashboards
+                }
+            }).promise();
+
+        } catch (err) {
+            logger.error('Failed to update user on DB');
+            logger.error(err);
+            logger.error('Cannot proceed to create update users dashboards');
+            return reject(new Error('Failed to remove dashboard'));
+
+        }
+
+        logger.info('Successfully updated users dashboards');
+
+        logger.info(`Completed removal of dashboardID: ${dashboardID} for userID: ${userID}`);
+        return resolve(true);
+
+    });
+};
+
 
 /**
  * putUserEvent

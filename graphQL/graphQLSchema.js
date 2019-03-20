@@ -24,6 +24,13 @@ exports.authenticatedSchema = buildSchema(`
     
   }
   
+  type removeDashboardResponse {
+    success: Boolean!
+    errorDescription: String
+    
+  }
+  
+    
   type getRefreshTokenResponse {
     success: Boolean!
     newJWT: String
@@ -51,6 +58,7 @@ exports.authenticatedSchema = buildSchema(`
   type Mutation {
     updateUser(updatedUser: userUpdateInput): String
     registerNewDashboard(dashboard: newDashboardInput): registerDashboardResponse
+    removeDashboardFromUser(dashboardID: String): removeDashboardResponse
   }
 
 `);

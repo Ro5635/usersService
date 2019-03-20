@@ -53,6 +53,20 @@ class registerDashboardResponse {
 
 }
 
+
+/**
+ * removeDashboardResponse
+ *
+ * Models the response for a request to register a
+ * new dashboard to a user
+ */
+class removeDashboardResponse {
+    constructor(success, errorDescription) {
+        this.success = success;
+        this.errorDescription = errorDescription;
+    }
+}
+
 /**
  * getRefreshTokenResponse
  *
@@ -179,6 +193,27 @@ exports.authenticatedRoot = {
 
         }
 
+    },
+    removeDashboardFromUser: async function({dashboardID}, requestContext) {
+        logger.info('Request to remove dashboard from user received');
+
+        const validatedTokenPayload = requestContext.res.req.validatedAuthToken;
+
+        // get the userID from JWT
+        const trustedUserID = validatedTokenPayload.token.userID;
+
+        try {
+            const success = await UserModel.removeDashboardFromUser(trustedUserID, dashboardID);
+            return new removeDashboardResponse(true);
+
+
+        } catch (err) {
+            logger.error('Request to UserModel to remove dashboard failed');
+            logger.error(err);
+
+            return new removeDashboardResponse(false, 'Failed to remove dashboard');
+
+        }
     }
 
 };
