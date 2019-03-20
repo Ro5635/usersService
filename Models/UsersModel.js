@@ -384,6 +384,8 @@ exports.registerNewDashboardToUser = async function (userID, dashboardName) {
  *
  * Removes a dashboard from a user
  *
+ * TODO: Respond error when does not find a matching dashboard to remove, currently returns success when there is no match
+ *
  * @param userID                user to register new dashboard to, this must be from a TRUSTED SOURCE
  * @param dashboardID         DashboardID for removal
  * @return {Promise<*>}         Success path resolves the new DashboardID  String
