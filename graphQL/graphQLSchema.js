@@ -33,7 +33,7 @@ exports.authenticatedSchema = buildSchema(`
     
   type getRefreshTokenResponse {
     success: Boolean!
-    newJWT: String
+    jwt: String
     errorDescription: String
     
   }

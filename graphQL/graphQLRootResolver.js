@@ -77,7 +77,7 @@ class getRefreshTokenResponse {
     constructor(success, errorDescription, newJWT) {
         this.success = success;
         this.errorDescription = errorDescription;
-        this.newJWT = newJWT;
+        this.jwt = newJWT;
 
     }
 
