@@ -104,7 +104,27 @@ exports.unauthenticatedRoot = {
 
             return new loginResponse(false);
         }
-    }
+    },
+    createUser: async function ({email, password, firstName, lastName}) {
+        logger.info('Request to create new user account received');
+
+        try {
+            logger.info('Requesting creation of new user by UserModel');
+            const newUserAccountDetails = await UserModel.registerNewUser(email, password, firstName, lastName);
+
+            logger.info('Successfully retrieved a new user account from UserModel');
+            logger.info('Returning new userID to caller');
+            return new createUserResponse(true, null, newUserAccountDetails.userID);
+
+        } catch (err) {
+            logger.error('Failure in calling UserModel to create new account');
+            logger.error(err);
+
+            logger.error('Returning error to caller');
+            return new createUserResponse(false, err.message);
+
+        }
+    },
 };
 
 
@@ -129,26 +149,7 @@ exports.authenticatedRoot = {
         return await UserModel.getUser(trustedUserID);
 
     },
-    createUser: async function ({email, password, firstName, lastName}) {
-        logger.info('Request to create new user account received');
 
-        try {
-            logger.info('Requesting creation of new user by UserModel');
-            const newUserAccountDetails = await UserModel.registerNewUser(email, password, firstName, lastName);
-
-            logger.info('Successfully retrieved a new user account from UserModel');
-            logger.info('Returning new userID to caller');
-            return new createUserResponse(true, null, newUserAccountDetails.userID);
-
-        } catch (err) {
-            logger.error('Failure in calling UserModel to create new account');
-            logger.error(err);
-
-            logger.error('Returning error to caller');
-            return new createUserResponse(false, err.message);
-
-        }
-    },
     getRefreshToken: async function (params, requestContext) {
         logger.info('Request received for new updated JWT');
 

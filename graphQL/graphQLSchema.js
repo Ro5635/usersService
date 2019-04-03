@@ -10,13 +10,6 @@ exports.authenticatedSchema = buildSchema(`
     
   }
   
-  type createUserResponse {
-    success: Boolean!
-    newUserID: String
-    errorDescription: String
-    
-  }
-  
   type registerDashboardResponse {
     success: Boolean!
     newDashboardID: String
@@ -42,7 +35,6 @@ exports.authenticatedSchema = buildSchema(`
 
   type Query {
     getUser(id: String): User
-    createUser(email: String!, password: String!, firstName: String!, lastName: String!): createUserResponse!
     getRefreshToken(id: String): getRefreshTokenResponse!
   }
   
@@ -64,6 +56,13 @@ exports.authenticatedSchema = buildSchema(`
 `);
 
 exports.unauthenticatedSchema = buildSchema(`
+
+ type createUserResponse {
+    success: Boolean!
+    newUserID: String
+    errorDescription: String
+    
+  }
  
   type loginResponse {
     success:    Boolean!
@@ -73,6 +72,7 @@ exports.unauthenticatedSchema = buildSchema(`
   
   type Query {
     login(email: String!, password: String!): loginResponse
+    createUser(email: String!, password: String!, firstName: String!, lastName: String!): createUserResponse!
    }
 
 `);
